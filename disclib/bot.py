@@ -38,17 +38,6 @@ class DiscordClient(discord.Client):
 
         await self.send("Started logging private dm's to the bot...", channel)
 
-    async def on_error(self, event_method, /, *args, **kwargs):
-        channel_id = int(os.getenv("MOD_CHANNEL"))
-
-        channel = self.get_channel(channel_id)
-
-        if channel is None:
-            channel = await self.fetch_channel(channel_id)
-        
-        await self.send("Stopped logging private dm's to the bot due to error", channel)
-        return await super().on_error(event_method, *args, **kwargs)
-
     async def on_message(self, message: discord.Message):
         if message.author == self.user:
             return
