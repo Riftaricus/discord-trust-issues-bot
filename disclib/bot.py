@@ -5,17 +5,14 @@ from dotenv import load_dotenv
 
 
 class DiscordClient(discord.Client):
-    def __init__(self, prefix:str = "!", **kwargs):
+    def __init__(self, prefix:str = "!", illegal_words: set[str] = [], **kwargs):
         super().__init__(**kwargs)
         self.prefix = prefix
+        self.illegal_words = illegal_words
         self.commands = [
             {
                 "command": "ping",
                 "function": disclib.functions.ping
-            },
-            {
-                "command": "test",
-                "function": disclib.functions.test
             }
         ]
         
@@ -29,9 +26,13 @@ class DiscordClient(discord.Client):
     async def on_ready(self):
         print(f"Logged on as {self.user}")
 
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         if message.author == self.user:
             return
+
+        for word in self.illegal_words:
+            if message.content.strip().lower().__contains__(word):
+                print(f"Illegal word ({word}) said")
 
         for command in self.commands:
             if message.content.strip().lower().startswith(self.prefix + command["command"]):
@@ -50,10 +51,10 @@ class DiscordClient(discord.Client):
         })
 
 
-def create_client(prefix: str = "!"):
+def create_client(prefix: str = "!", illegal_words: set[str] = []):
     intents = discord.Intents.default()
     intents.message_content = True
-    return DiscordClient(intents=intents, prefix=prefix)
+    return DiscordClient(intents=intents, prefix=prefix, illegal_words=illegal_words)
 
 
 def run(token: str, prefix: str = "!"):
