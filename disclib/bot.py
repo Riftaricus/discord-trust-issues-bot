@@ -2,6 +2,7 @@ import discord
 import disclib.functions
 import inspect
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 class DiscordClient(discord.Client):
@@ -32,7 +33,8 @@ class DiscordClient(discord.Client):
 
         for word in self.illegal_words:
             if message.content.strip().lower().__contains__(word):
-                print(f"Illegal word ({word}) said")
+                await message.author.timeout(timedelta(seconds=120), reason="Illegal word detected")
+                await message.delete()
 
         for command in self.commands:
             if message.content.strip().lower().startswith(self.prefix + command["command"]):
