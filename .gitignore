@@ -2,3 +2,5 @@
 __pycache__
 .vscode
 bot_data.json
+disclib/__pycache__/bot.cpython-313.pyc
+disclib/__pycache__/functions.cpython-313.pyc
