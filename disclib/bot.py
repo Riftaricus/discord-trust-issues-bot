@@ -12,12 +12,19 @@ class DiscordClient(discord.Client):
             {
                 "command": "ping",
                 "function": disclib.functions.ping
+            },
+            {
+                "command": "test",
+                "function": disclib.functions.test
             }
         ]
         
     async def clear_commands(self, message):
         self.commands.clear()
         await message.channel.send("Commands cleared")
+        
+    async def send(self, message, channel: discord.TextChannel):
+        channel.send(message)
 
     async def on_ready(self):
         print(f"Logged on as {self.user}")
