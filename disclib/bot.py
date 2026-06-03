@@ -4,6 +4,7 @@ import json
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+from disclib import functions
 
 DATA_FILE = "bot_data.json"
 
@@ -28,7 +29,14 @@ class DiscordClient(discord.Client):
             {
                 "command": "blacklist",
                 "function": self.blacklist_command,
-                "has_params": True
+                "has_params": True,
+                "param_type": "user"
+            },
+            {
+                "command": "role",
+                "function": functions.role_button,
+                "has_params": True,
+                "param_type": "role"
             }
         ]
 
@@ -153,9 +161,8 @@ class DiscordClient(discord.Client):
             if channel is None:
                 channel = await self.fetch_channel(channel_id)
 
-            if self.messages:
-                if self.messages[-1]["author_id"] != message.author.id:
-                    await channel.send("----")
+            if self.messages and self.messages[-1]["author_id"] != message.author.id:
+                await channel.send("----")
 
             self.messages.append({
                 "author_id": message.author.id,
